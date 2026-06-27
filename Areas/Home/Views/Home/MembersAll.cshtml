@@ -1,0 +1,20 @@
+@model CUTDataScienceClub.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Members";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
+}
+
+<div class="section-title"><span>All Members</span><small class="text-muted">Member directory</small></div>
+<div class="members-grid">
+    @foreach(var m in Model.Members ?? Enumerable.Empty<CUTDataScienceClub.Models.Member>()){
+        <div class="member-tile">
+            <div class="member-avatar">@((m.FullName ?? "").Split(' ').Select(s=>s.FirstOrDefault()).Where(c=>c!=0).Take(2).Aggregate("", (a,b)=>a+b).ToUpper())</div>
+            <div class="member-name">@m.FullName</div>
+            <div class="member-meta">@m.Program</div>
+        </div>
+    }
+</div>

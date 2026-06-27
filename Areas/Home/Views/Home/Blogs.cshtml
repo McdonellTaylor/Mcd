@@ -1,0 +1,81 @@
+@model IEnumerable<CUTDataScienceClub.Models.Blog>
+
+@{
+	ViewData["Title"] = "Blogs";
+}
+
+<link rel="stylesheet" href="~/css/blogs.css" />
+<link rel="stylesheet" href="~/css/home-blogs.css" />
+
+<section class="home-blogs-hero">
+	<div class="container">
+		<div class="hero-row">
+			<h1>Latest from the CUT DSC Blog</h1>
+			<div class="search-wrap">
+				<input id="blogSearch" type="search" placeholder="Search blogs by title, excerpt, tags or author..." aria-label="Search blogs" />
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="blog-grid" id="blogGrid">
+	@if (Model != null && Model.Any())
+	{
+		foreach (var b in Model)
+		{
+			var searchable = $"{b.Title} {b.Excerpt} {b.Tags} {b.Author}".ToLowerInvariant();
+			<article class="blog-item animate-item" data-search="@searchable">
+				<div class="media-wrap">
+					@if (!string.IsNullOrEmpty(b.VideoUrl))
+					{
+						<div class="video-thumb" data-video-url="@b.VideoUrl">
+							<div class="play-overlay">▶</div>
+						</div>
+					}
+					else if (!string.IsNullOrEmpty(b.ImageUrl))
+					{
+						<div class="image-thumb" style="background-image:url('@b.ImageUrl')"></div>
+					}
+					else
+					{
+						<div class="image-thumb placeholder"></div>
+					}
+				</div>
+
+				<div class="blog-body">
+					<h2 class="blog-title">@b.Title</h2>
+					<div class="meta">
+						<span class="author">@b.Author</span>
+						<span class="dot">•</span>
+						<span class="date">@b.PublishedDate?.ToString("MMM d, yyyy")</span>
+					</div>
+
+					<p class="excerpt">@b.Excerpt</p>
+
+					@if (!string.IsNullOrEmpty(b.Tags))
+					{
+						<div class="tags">
+							@foreach (var t in (b.Tags ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries))
+							{
+								<span class="tag">@t.Trim()</span>
+							}
+						</div>
+					}
+
+						<div class="actions">
+							<a class="btn btn-primary" asp-area="Publicity" asp-controller="Blog" asp-action="Details" asp-route-id="@b.Id">Details</a>
+						</div>
+
+					</div>
+			</article>
+		}
+	}
+	else
+	{
+		<div class="no-blogs">No blog posts found.</div>
+	}
+</section>
+
+<script src="~/js/home-blogs.js"></script>
+
+

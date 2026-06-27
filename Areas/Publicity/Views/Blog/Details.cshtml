@@ -1,0 +1,64 @@
+@model CUTDataScienceClub.Models.Blog
+
+@{
+    ViewData["Title"] = Model?.Title ?? "Blog Details";
+}
+
+<link rel="stylesheet" href="~/css/blogs.css" />
+
+<section class="blog-hero">
+    <div class="hero-inner">
+        <h1>@Model?.Title</h1>
+        <div class="meta">by <strong>@Model?.Author</strong> <span class="dot">•</span> @Model?.PublishedDate?.ToString("MMM d, yyyy")</div>
+    </div>
+</section>
+
+<section class="details-panel" style="padding:24px;">
+    <div class="details-grid" style="max-width:1000px;margin:0 auto;">
+        <div class="media-wrap" style="border-radius:12px;overflow:hidden;">
+            @if (!string.IsNullOrEmpty(Model?.VideoUrl))
+            {
+                <video controls style="width:100%;height:auto;display:block;background:#000;">
+                    <source src="@Model.VideoUrl" />
+                    Your browser does not support the video tag.
+                </video>
+            }
+            else if (!string.IsNullOrEmpty(Model?.ImageUrl))
+            {
+                <div class="image-thumb" style="height:420px;background-image:url('@Model.ImageUrl');background-size:cover;background-position:center"></div>
+            }
+            else
+            {
+                <div class="image-thumb placeholder" style="height:420px;display:flex;align-items:center;justify-content:center;color:var(--muted);">No media</div>
+            }
+        </div>
+
+        <div style="margin-top:18px;">
+            <div class="tags" style="margin-bottom:12px;">
+                @if (!string.IsNullOrEmpty(Model?.Tags))
+                {
+                    foreach (var t in Model.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <span class="tag">@t.Trim()</span>
+                    }
+                }
+            </div>
+
+            <div class="content-area" style="background: rgba(255,255,255,0.02); padding:18px; border-radius:10px;">
+                @Html.Raw(Model?.Content ?? "<p>No content</p>")
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:14px;">
+                <a asp-area="Publicity" asp-controller="Blog" asp-action="Upsert" asp-route-id="@(Model?.Id ?? 0)" class="btn btn-outline">Edit</a>
+
+                <form asp-area="Publicity" asp-controller="Blog" asp-action="DeleteConfirmed" method="post" onsubmit="return confirm('Delete this blog post?');" class="delete-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@(Model?.Id ?? 0)" />
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+
+                <a asp-area="Publicity" asp-controller="Blog" asp-action="Index" class="btn btn-primary">Back to list</a>
+            </div>
+        </div>
+    </div>
+</section>

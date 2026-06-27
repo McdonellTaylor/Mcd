@@ -1,0 +1,218 @@
+/* Fancy Blog grid styles - glassmorphism + responsive columns */
+:root{
+    --bg: #0f1724;
+    /* Increased card opacity for better contrast over background images */
+    --card-bg: rgba(255,255,255,0.12);
+    --accent: #7c3aed; /* purple */
+    /* Slightly brighter muted color for metadata */
+    --muted: rgba(255,255,255,0.85);
+    /* Slightly stronger border for clearer card separation */
+    --glass-border: rgba(255,255,255,0.10);
+}
+
+/* Allow the layout to control the page background; keep text color suitable for dark backgrounds */
+body{
+    
+    color: #eef2ff;
+}
+
+.blog-hero{
+    padding: 48px 24px;
+    text-align:center;
+    margin-bottom: 24px;
+}
+.blog-hero h1{
+    font-size: 2.4rem;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+}
+.blog-hero .lead{
+    color: var(--muted);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.blog-grid{
+    display: grid;
+    /* force a single column so each blog takes the full row */
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 12px 24px 48px;
+    align-items: stretch;
+}
+
+/* keep the blog list centered and cap width so cards don't stretch too wide */
+.blog-grid{
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.blog-item{
+    /* stronger dark translucent card for improved contrast */
+    background: linear-gradient(180deg, rgba(6,10,20,0.82), rgba(6,10,20,0.7));
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    backdrop-filter: blur(8px) saturate(120%);
+    transform-origin: center;
+    transition: transform 220ms cubic-bezier(.2,.9,.28,1), box-shadow 220ms;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* allow absolute-positioned ribbon to be placed relative to the card */
+}
+.blog-item:hover{
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 60px rgba(2,6,23,0.8);
+}
+
+.media-wrap{
+    height: 200px;
+    position: relative;
+}
+.image-thumb, .video-thumb{
+    height:100%;
+    background-size: cover;
+    background-position: center;
+}
+.image-thumb.placeholder{
+    background: linear-gradient(135deg, rgba(120,120,140,0.12), rgba(80,80,100,0.08));
+}
+.video-thumb{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    position:relative;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.45));
+}
+.play-overlay{
+    width:72px;
+    height:72px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    color: white;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.92));
+    box-shadow: 0 8px 30px rgba(124,58,237,0.18);
+    transition: transform 180ms ease;
+}
+.video-thumb:hover .play-overlay{ transform: scale(1.06); }
+
+.blog-body{
+    padding: 18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    flex:1 1 auto;
+}
+.blog-title{
+    margin:0;
+    font-size:1.25rem;
+    letter-spacing: -0.01em;
+}
+.meta{
+    color: var(--muted);
+    font-size:0.9rem;
+}
+.excerpt{
+    /* stronger, pure white text for readable excerpts */
+    color: #ffffff;
+    opacity: 0.95;
+    margin:0;
+    flex:1 1 auto;
+}
+.tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+}
+.tag{
+    background: linear-gradient(90deg, rgba(124,58,237,0.18), rgba(59,130,246,0.12));
+    color: #f8fafc;
+    padding:6px 10px;
+    border-radius:999px;
+    font-size:0.8rem;
+}
+.actions{
+    display:flex;
+    gap:8px;
+    justify-content:flex-end;
+    margin-top:8px;
+}
+.btn{
+    padding:8px 12px;
+    border-radius:10px;
+    text-decoration:none;
+    color:inherit;
+}
+.btn-primary{
+    background: linear-gradient(90deg, var(--accent), #3b82f6);
+    color: white;
+    border: none;
+}
+.btn-outline{
+    border:1px solid rgba(255,255,255,0.08);
+    color: #e6eefc;
+}
+
+/* Danger / delete button */
+.btn-danger{
+    background: linear-gradient(90deg, rgba(239,68,68,0.95), rgba(220,38,38,0.9));
+    color: white;
+    border: none;
+}
+
+/* Create button in hero */
+.hero-top{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+}
+.create-btn{
+    padding:10px 16px;
+    font-weight:600;
+    box-shadow: 0 8px 30px rgba(59,130,246,0.12);
+}
+
+/* small form alignment for delete button */
+.delete-form{ display:inline-block; margin:0; }
+
+/* Decorative diagonal ribbon */
+.blog-item::before{
+    content: "";
+    position:absolute;
+    top:12px;
+    left:-40px;
+    width:120px;
+    height:28px;
+    background: linear-gradient(90deg, rgba(124,58,237,0.18), rgba(59,130,246,0.12));
+    transform: rotate(-18deg);
+    border-radius:6px;
+    box-shadow: 0 4px 14px rgba(24,24,48,0.3);
+}
+
+/* make the ribbon smaller on small screens */
+@media (max-width:600px){
+    .blog-hero h1{ font-size:1.6rem }
+    .media-wrap{ height:160px }
+}
+
+/* Keep single-column layout on wide screens as well (one per row) */
+@media (min-width:1200px){
+    .blog-grid{ grid-template-columns: 1fr; }
+}
+
+.no-blogs{
+    padding:40px;
+    text-align:center;
+    color:var(--muted);
+}
+
+/* media preview styles used on Upsert page */
+.media-preview{ display:flex; align-items:center; gap:12px; }
+.media-preview img, .media-preview video{ max-height:160px; border-radius:8px; }
+

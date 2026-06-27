@@ -1,0 +1,24 @@
+@model CUTDataScienceClub.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Projects";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
+}
+
+<div class="section-title"><span>All Projects</span><small class="text-muted">All projects</small></div>
+<div class="slider-row">
+    <div class="cards">
+        @foreach(var p in Model.Projects ?? Enumerable.Empty<CUTDataScienceClub.Models.Project>()){
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">@p.Title</div>
+                    <div class="card-text">@p.Description</div>
+                    <div style="margin-top:8px;text-align:right;"><a class="btn btn-sm btn-primary" href="#">View</a></div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,100 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Create an account";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 d-flex align-items-center justify-content-center border-end">
+                            <div class="text-center">
+                                <img id="registerPreview" src="/img/avatar-placeholder.png" alt="avatar" class="rounded-circle mb-3" style="width:140px;height:140px;object-fit:cover;" />
+                                <p class="text-muted small">Your profile picture will appear on your public profile.</p>
+                                <div class="mb-2">
+                                    <input asp-for="Input.ImageFile" type="file" accept="image/*" class="form-control" id="regImageInput" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <h3 class="mb-3">Create your account</h3>
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" enctype="multipart/form-data">
+                                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.Name" class="form-label"></label>
+                                    <input asp-for="Input.Name" class="form-control" placeholder="Full name" />
+                                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.Email" class="form-label"></label>
+                                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="you@example.com" />
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.Password" class="form-label"></label>
+                                    <input asp-for="Input.Password" class="form-control" autocomplete="new-password" />
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.ConfirmPassword" class="form-label"></label>
+                                    <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" />
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-primary btn-lg">Register</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col text-center">
+            <h6 class="text-muted">Or register with</h6>
+            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+                <p class="text-muted">No external authentication providers are configured.</p>
+            }
+            else
+            {
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-inline">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        <button type="submit" class="btn btn-outline-primary me-2" name="provider" value="@provider.Name">@provider.DisplayName</button>
+                    }
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        (function () {
+            const input = document.getElementById('regImageInput');
+            const preview = document.getElementById('registerPreview');
+            if (!input) return;
+            input.addEventListener('change', function () {
+                const file = input.files && input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        })();
+    </script>
+}

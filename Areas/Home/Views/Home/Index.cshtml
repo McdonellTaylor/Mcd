@@ -1,0 +1,87 @@
+﻿@model CUTDataScienceClub.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
+}
+
+<div class="home-hero">
+    <h1>Welcome to @Model.ClubInformation?.Name ?? "CUT Data Science Club"</h1>
+    <p class="lead">@Model.ClubInformation?.ShortDescription ?? "A campus community for data enthusiasts — projects, workshops, and more."</p>
+    <div class="cta">
+        <a asp-area="Home" asp-controller="Home" asp-action="About" class="btn btn-lg btn-primary">Learn more</a>
+        <a asp-area="Home" asp-controller="Home" asp-action="Blogs" class="btn btn-lg btn-outline-light">Read posts</a>
+    </div>
+</div>
+
+@* Carousel using the staticimages folder *@
+<div class="home-carousel">
+    <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active" style="background-image:url('/staticimages/IMG-20251028-WA0110.jpg')"></div>
+            <div class="carousel-item" style="background-image:url('/staticimages/IMG-20251028-WA0114.jpg')"></div>
+            <div class="carousel-item" style="background-image:url('/staticimages/IMG-20251028-WA0115.jpg')"></div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+@* Projects slider *@
+<div class="section-title"><span>Projects</span><small class="text-muted">Recent & ongoing</small></div>
+<div class="slider-row">
+    <div class="cards">
+        @foreach(var p in Model.Projects ?? Enumerable.Empty<CUTDataScienceClub.Models.Project>()){
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">@p.Title</div>
+                    <div class="card-text">@p.Description</div>
+                    <div style="margin-top:8px;text-align:right;"><a class="btn btn-sm btn-primary" href="#">View</a></div>
+                </div>
+            </div>
+        }
+    </div>
+    <div style="max-width:1100px;margin:6px auto 0;text-align:right;">
+        <a asp-area="Home" asp-controller="Home" asp-action="ProjectsAll" class="btn btn-sm btn-outline-light">View all</a>
+    </div>
+</div>
+
+@* Blogs *@
+<div class="section-title"><span>From the Blog</span><small class="text-muted">Latest posts</small></div>
+<div class="blogs-grid">
+    @foreach(var b in Model.Blogs ?? Enumerable.Empty<CUTDataScienceClub.Models.Blog>()){
+        <div class="blog-card">
+            <div style="height:160px; background-size:cover; background-position:center; background-image: url('@(string.IsNullOrEmpty(b.ImageUrl)? "/staticimages/IMG-20251028-WA0118.jpg" : b.ImageUrl)')"></div>
+            <div class="meta"><strong>@b.Title</strong> &nbsp; <span class="text-muted">by @b.Author</span></div>
+            <div class="excerpt">@b.Excerpt</div>
+            <div class="card-footer"><a asp-area="Publicity" asp-controller="Blog" asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-primary">Details</a></div>
+        </div>
+    }
+</div>
+<div style="max-width:1100px;margin:6px auto 0;text-align:right;">
+    <a asp-area="Home" asp-controller="Home" asp-action="BlogsAll" class="btn btn-sm btn-outline-light">View all</a>
+</div>
+
+@* Members *@
+<div class="section-title"><span>Members</span><small class="text-muted">Active members</small></div>
+<div class="members-grid">
+    @foreach(var m in Model.Members ?? Enumerable.Empty<CUTDataScienceClub.Models.Member>()){
+        <div class="member-tile">
+            <div class="member-avatar">@((m.FullName ?? "").Split(' ').Select(s=>s.FirstOrDefault()).Where(c=>c!=0).Take(2).Aggregate("", (a,b)=>a+b).ToUpper())</div>
+            <div class="member-name">@m.FullName</div>
+            <div class="member-meta">@m.Program</div>
+        </div>
+    }
+</div>
+<div style="max-width:1100px;margin:6px auto 40px;text-align:right;">
+    <a asp-area="Home" asp-controller="Home" asp-action="MembersAll" class="btn btn-sm btn-outline-light">View all</a>
+</div>

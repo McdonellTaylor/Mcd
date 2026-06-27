@@ -1,0 +1,65 @@
+@model IEnumerable<CUTDataScienceClub.Models.Member>
+@using System.Linq
+
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/members.css" />
+
+<div class="members-bg" style="min-height:75vh;padding-top:2.25rem;">
+	<div class="container members-container">
+		<div class="top-bar">
+			<div>
+				<h1 class="h3">Members</h1>
+				<p class="text-muted small">A stylish view of all registered members.</p>
+			</div>
+			<div>
+				<a asp-area="Admin" asp-controller="Member" asp-action="Upsert" class="btn create-btn btn-lg">
+					<i class="bi bi-plus-circle" aria-hidden="true"></i>&nbsp; New Member
+				</a>
+			</div>
+		</div>
+
+		@if (!Model?.Any() ?? true)
+		{
+			<div class="no-members">
+				<h4>No members found</h4>
+				<p>Use the New Member button to add the first member.</p>
+			</div>
+		}
+		else
+		{
+			<div class="member-grid">
+				@foreach (var item in Model ?? Enumerable.Empty<CUTDataScienceClub.Models.Member>())
+				{
+					<div class="member-card p-3">
+						<div class="d-flex align-items-center gap-3">
+							<div class="card-avatar">@((item.FullName ?? "").Split(' ').Select(s => s.FirstOrDefault()).Where(c => c!=0).Take(2).Aggregate("", (a,b) => a + b).ToUpper())</div>
+							<div class="flex-grow-1">
+								<h5 class="mb-0">@item.FullName</h5>
+								<div class="member-meta">Reg: @item.RegNumber &nbsp;•&nbsp; Program: @item.Program &nbsp;•&nbsp; Level: @item.CurrentLevel</div>
+							</div>
+							<div class="actions d-flex gap-2">
+								<a asp-area="Admin" asp-controller="Member" asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-outline-light btn-icon">
+									<i class="bi bi-pencil-fill"></i><span class="btn-label">Edit</span>
+								</a>
+								<a asp-area="Admin" asp-controller="Member" asp-action="Details" asp-route-id="@item.Id" class="btn btn-light btn-icon">
+									<i class="bi bi-info-circle"></i><span class="btn-label">Details</span>
+								</a>
+								<form asp-area="Admin" asp-controller="Member" asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete this member?');">
+									<button type="submit" class="btn btn-danger btn-icon"><i class="bi bi-trash"></i><span class="btn-label">Delete</span></button>
+								</form>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		}
+
+	</div>
+</div>
+
+@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js" asp-fallback-src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+}

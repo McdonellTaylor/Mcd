@@ -1,0 +1,21 @@
+@model CUTDataScienceClub.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Blogs";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
+}
+
+<div class="section-title"><span>All Blog Posts</span><small class="text-muted">All entries</small></div>
+<div class="blogs-grid">
+    @foreach(var b in Model.Blogs ?? Enumerable.Empty<CUTDataScienceClub.Models.Blog>()){
+        <div class="blog-card">
+            <div style="height:160px; background-size:cover; background-position:center; background-image: url('@(string.IsNullOrEmpty(b.ImageUrl)? "/staticimages/IMG-20251028-WA0118.jpg" : b.ImageUrl)')"></div>
+            <div class="meta"><strong>@b.Title</strong> &nbsp; <span class="text-muted">by @b.Author</span></div>
+            <div class="excerpt">@b.Excerpt</div>
+            <div class="card-footer"><a asp-area="Publicity" asp-controller="Blog" asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-primary">Details</a></div>
+        </div>
+    }
+</div>

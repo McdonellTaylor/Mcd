@@ -1,0 +1,66 @@
+@model IEnumerable<CUTDataScienceClub.Models.Event>
+@using System.Linq
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/members.css" />
+
+<div class="members-bg" style="min-height:75vh;padding-top:2.25rem;">
+    <div class="container members-container">
+        <div class="top-bar">
+            <div>
+                <h1 class="h3">Events</h1>
+                <p class="text-muted small">Upcoming and past events managed by the club.</p>
+            </div>
+            <div>
+                <a asp-area="Admin" asp-controller="Event" asp-action="Upsert" class="btn create-btn btn-lg">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>&nbsp; New Event
+                </a>
+            </div>
+        </div>
+
+        @if (!Model?.Any() ?? true)
+        {
+            <div class="no-members">
+                <h4>No events found</h4>
+                <p>Use the New Event button to add an event.</p>
+            </div>
+        }
+        else
+        {
+            <div class="member-grid">
+                @foreach (var item in Model ?? Enumerable.Empty<CUTDataScienceClub.Models.Event>())
+                {
+                    <div class="member-card p-3">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1">@item.Title</h5>
+                                <div class="member-meta">@item.Location &nbsp;•&nbsp; @item.StartDate.ToString("yyyy-MM-dd HH:mm") @if(item.EndDate!=null){ <text>- @item.EndDate.Value.ToString("HH:mm")</text> }</div>
+                                <p class="mt-2 mb-2">@item.Description</p>
+                                <div class="text-muted small">Organizer: @item.Organizer</div>
+                            </div>
+                            <div class="actions d-flex gap-2">
+                                <a asp-area="Admin" asp-controller="Event" asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-outline-light btn-icon">
+                                    <i class="bi bi-pencil-fill"></i><span class="btn-label">Edit</span>
+                                </a>
+                                <a asp-area="Admin" asp-controller="Event" asp-action="Details" asp-route-id="@item.Id" class="btn btn-light btn-icon">
+                                    <i class="bi bi-info-circle"></i><span class="btn-label">Details</span>
+                                </a>
+                                <form asp-area="Admin" asp-controller="Event" asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete this event?');">
+                                    <button type="submit" class="btn btn-danger btn-icon"><i class="bi bi-trash"></i><span class="btn-label">Delete</span></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.js"></script>
+}

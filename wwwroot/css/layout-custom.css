@@ -1,0 +1,152 @@
+html, body {
+    height: 100%;
+}
+
+:root {
+    /* CSS variable set by inline script in _Layout to pick random image */
+    --bg-image: url('/staticimages/IMG-20251028-WA0110.jpg');
+    /* footer height used to reserve space and keep footer fixed without overlapping content */
+    --site-footer-height: 64px;
+}
+
+body {
+    /* overlay gradient + image */
+    background-image: linear-gradient(rgba(6, 11, 22, 0.45), rgba(6, 11, 22, 0.45)), var(--bg-image);
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    color: #f8fafc; /* slightly off-white for contrast */
+}
+
+/* Floating centered navbar */
+.navbar-floating {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1085;
+    background: rgba(9, 13, 20, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 14px;
+    padding: 0.35rem 0.5rem;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+    border: 1px solid rgba(255,255,255,0.04);
+    width: min(1100px, calc(100% - 40px));
+}
+
+.navbar-floating .navbar-brand,
+.navbar-floating .nav-link {
+    color: rgba(255,255,255,0.95) !important;
+}
+
+.navbar-floating .nav-link:hover,
+.navbar-floating .nav-link:focus {
+    color: #ffffff !important;
+}
+
+/* Make dropdowns match floating theme */
+.navbar-floating .dropdown-menu {
+    background: rgba(10, 16, 26, 0.7);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.navbar-floating .dropdown-item {
+    color: rgba(255,255,255,0.92);
+}
+
+/* Ensure the toggler icon remains visible on dark background */
+.navbar-floating .navbar-toggler {
+    border-color: rgba(255,255,255,0.12);
+}
+
+.navbar-floating .navbar-toggler-icon {
+    filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(1.2);
+}
+
+/* Make sure content below is not hidden behind the fixed navbar */
+.content-wrapper { padding-top: 96px; padding-bottom: calc(var(--site-footer-height) + 24px); }
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .navbar-floating { top: 10px; padding: 0.25rem; }
+    .content-wrapper { padding-top: 140px; padding-bottom: 140px; }
+}
+
+@media (max-width: 992px) {
+    .navbar-floating { width: calc(100% - 24px); left: 50%; transform: translateX(-50%); }
+}
+
+/* Fixed/stationary footer that sits above page content but under the navbar */
+.site-footer{
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0;
+    right: 0;
+    height: var(--site-footer-height);
+    z-index: 1082; /* slightly below navbar (1085) */
+    background: rgba(6,11,22,0.72);
+    color: #f8fafc;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: auto;
+    transition: none !important;
+}
+.site-footer .container{ display:flex; align-items:center; justify-content:center; }
+
+@media (max-width:576px){
+    .site-footer{ padding:12px 0; }
+}
+
+/* Site-wide content overlay to improve contrast against background images.
+   This places a subtle dark layer between the hero/background image and the page content. */
+.content-wrapper{
+    position: relative;
+}
+.content-wrapper::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(6,8,14,0.25); /* subtle darken */
+    z-index: 0;
+    pointer-events: none;
+}
+.content-wrapper > *{
+    position: relative;
+    z-index: 1; /* ensure content sits above the overlay */
+}
+
+/* Generic card and panel styles to guarantee legibility over images.
+   These are intentionally conservative so they don't override specialized component styling. */
+.card,
+.blog-item,
+.member-card,
+.project-card,
+.event-card,
+.panel,
+.card-like {
+    background: linear-gradient(180deg, rgba(6,10,20,0.78), rgba(6,10,20,0.64));
+    color: #f8fafc !important;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+}
+
+/* Make muted text slightly brighter when over images */
+.text-muted {
+    color: rgba(255,255,255,0.72) !important;
+}
+
+/* Small utility for elements that need an extra opaque backdrop */
+.backdrop-strong{
+    background: rgba(6,10,20,0.82);
+    color: #fff;
+}
+
+/* Ensure inline links in content are visible */
+.content-wrapper a { color: #a5b4fc; }
+.content-wrapper a:hover { color: #fff; }

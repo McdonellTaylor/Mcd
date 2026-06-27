@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@* Include the site style and a small page stylesheet; hide the global navbar and footer for a clean privacy page experience *@
+@section Styles {
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
+    <style>
+        /* Hide global nav and footer for this page */
+        .navbar-floating, .site-footer { display: none !important; }
+
+        /* Page hero */
+        .privacy-hero { padding: 6rem 1rem 3rem; text-align:center; color: #fff; }
+        .privacy-hero h1 { font-size:2.6rem; font-weight:700; margin-bottom:0.5rem; }
+        .privacy-hero p { max-width:900px; margin:0 auto; opacity:0.92; }
+
+        /* Policy card */
+        .policy-section { max-width:900px; margin: 2rem auto; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); padding:2rem; border-radius:12px; color:#fff; box-shadow:0 8px 30px rgba(2,6,23,0.6); }
+        .policy-section h2 { color: var(--accent); margin-bottom:0.75rem; }
+        .policy-section p { color: rgba(255,255,255,0.92); line-height:1.75; }
+
+        .back-home { text-align:center; margin:2.5rem 0 5rem; }
+        .back-home a { color:#fff; background: linear-gradient(90deg,var(--accent),#3b82f6); padding:10px 20px; border-radius:999px; text-decoration:none; font-weight:600; }
+
+    @@media (max-width:768px){ .privacy-hero h1{ font-size:2rem; } .policy-section{ margin:1.25rem; } }
+    </style>
+}
+
+<div class="privacy-hero">
+    <h1>Privacy Policy</h1>
+    <p>We value your privacy and are committed to protecting your personal information.</p>
+</div>
+
+<section class="policy-section">
+    <h2>1. Information Collection</h2>
+    <p>We collect only the information necessary to provide services, improve the club experience, and communicate updates. This may include names, contact details, and content submitted by members.</p>
+</section>
+
+<section class="policy-section">
+    <h2>2. Use of Information</h2>
+    <p>Information is used to manage membership, communicate about events and opportunities, and maintain the functionality of the website. We do not sell personal data.</p>
+</section>
+
+<section class="policy-section">
+    <h2>3. Data Protection</h2>
+    <p>We take reasonable measures to protect stored data. Access is limited to authorized club administrators. If you believe your data has been compromised, contact us immediately.</p>
+</section>
+
+<section class="policy-section">
+    <h2>4. Cookies and Analytics</h2>
+    <p>We use minimal cookies for site functionality and analytics to improve the user experience. You can opt out of non-essential cookies via your browser settings.</p>
+</section>
+
+<section class="policy-section">
+    <h2>5. Third-Party Services</h2>
+    <p>Where we integrate third-party services (video hosting, analytics), their privacy practices apply. We recommend reviewing their terms and privacy policies.</p>
+</section>
+
+<section class="policy-section">
+    <h2>6. Your Rights</h2>
+    <p>You may request access to, correction of, or deletion of your personal data. Contact the club via the email on the website for requests.</p>
+</section>
+
+<div class="back-home">
+    <a asp-area="" asp-controller="Home" asp-action="Index">← Back to Home</a>
+</div>
+
+

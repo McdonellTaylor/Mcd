@@ -1,0 +1,78 @@
+@model CUTDataScienceClub.Models.Event
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/members.css" />
+
+<div class="members-bg" style="min-height:70vh; padding-top:2.5rem;">
+    <div class="container members-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="member-card p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="card-avatar" style="width:64px;height:64px;font-size:20px;">@((Model?.Title ?? "New").Split(' ').Select(s => s.FirstOrDefault()).Where(c => c!=0).Take(2).Aggregate("", (a,b) => a + b).ToUpper())</div>
+                        <div class="ms-3">
+                            <h3 class="mb-0">@((Model?.Id == 0) ? "Create Event" : "Edit Event")</h3>
+                            <div class="text-muted small">A beautiful form for adding or editing events</div>
+                        </div>
+                    </div>
+
+                    <form asp-area="Admin" asp-controller="Event" asp-action="Upsert" method="post" class="row g-3">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="col-12">
+                            <label class="form-label">Title</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-0"><i class="bi bi-card-text" style="color:#e6eef8"></i></span>
+                                <input asp-for="Title" class="form-control card-input" placeholder="Event title" />
+                            </div>
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control card-input" rows="4" placeholder="Describe the event..."></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input asp-for="Location" class="form-control card-input" placeholder="Room/Online/Address" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Organizer</label>
+                            <input asp-for="Organizer" class="form-control card-input" placeholder="Organizer name" />
+                            <span asp-validation-for="Organizer" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Start Date</label>
+                            <input asp-for="StartDate" class="form-control card-input" type="datetime-local" value="@(Model?.StartDate.ToString("yyyy-MM-ddTHH:mm") ?? DateTime.Now.ToString("yyyy-MM-ddTHH:mm"))" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">End Date</label>
+                            <input asp-for="EndDate" class="form-control card-input" type="datetime-local" value="@(Model?.EndDate.HasValue == true ? Model.EndDate.Value.ToString("yyyy-MM-ddTHH:mm") : "")" />
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 justify-content-end mt-3">
+                            <a asp-area="Admin" asp-controller="Event" asp-action="Index" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn create-btn">Save</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

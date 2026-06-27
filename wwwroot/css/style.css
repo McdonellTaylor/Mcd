@@ -1,0 +1,328 @@
+:root {
+  --primary: #00a4d6;
+  --secondary: #002b3d;
+  --light: #ffffff;
+  --gray: #f4f7f8;
+  --transition: all 0.4s ease-in-out;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  color: var(--secondary);
+  background-color: var(--light);
+  overflow-x: hidden;
+}
+
+/* Navbar */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 3rem;
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  z-index: 999;
+}
+
+header .logo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+header .logo img {
+  height: 50px;
+}
+
+header h1 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+header nav a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: var(--secondary);
+  font-weight: 500;
+  position: relative;
+}
+
+header nav a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  bottom: -3px;
+  left: 0;
+  background: var(--primary);
+  transition: width 0.3s;
+}
+
+header nav a:hover::after {
+  width: 100%;
+}
+
+/* Hero */
+#hero {
+  position: relative;
+  height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  background: linear-gradient(120deg, var(--primary), var(--secondary));
+  overflow: hidden;
+}
+
+#hero .overlay {
+  position: absolute;
+  inset: 0;
+  background: url('https://www.transparenttextures.com/patterns/cubes.png');
+  opacity: 0.15;
+}
+
+#hero .hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  padding: 0 2rem;
+}
+
+#hero h2 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+#hero p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+#hero .btn {
+  background: white;
+  color: var(--primary);
+  padding: 0.9rem 2rem;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+#hero .btn:hover {
+  background: var(--secondary);
+  color: white;
+}
+
+/* Section base styles */
+section {
+  padding: 4rem 8%;
+}
+
+section h2 {
+  text-align: center;
+  color: var(--primary);
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+/* Vision & Objectives */
+#vision p, #objectives ul {
+  max-width: 900px;
+  margin: auto;
+  line-height: 1.8;
+  color: #333;
+}
+
+#objectives ul {
+  list-style: disc;
+  padding-left: 2rem;
+}
+
+/* Team */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.member {
+  background: rgba(255,255,255,0.6);
+  border-radius: 15px;
+  padding: 2rem 1rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
+}
+
+.member:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 6px 25px rgba(0,0,0,0.1);
+}
+
+.member .photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  margin: 0 auto 1rem;
+  background-size: cover;
+  background-position: center;
+}
+
+/* Join Us */
+form {
+  max-width: 600px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+form input, form textarea {
+  padding: 0.8rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 1rem;
+  resize: none;
+}
+
+form button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+form button:hover {
+  background: var(--secondary);
+}
+
+/* Footer */
+footer {
+  background: var(--secondary);
+  color: white;
+  text-align: center;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+}
+
+/* Animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeInUp 1s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+  }
+  nav a {
+    display: inline-block;
+    margin: 0.5rem;
+  }
+  #hero h2 {
+    font-size: 2rem;
+  }
+}
+
+
+/* EVENTS GALLERY */
+#events {
+  background: var(--gray);
+  text-align: center;
+}
+
+#events p {
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  color: #444;
+}
+
+/* Grid of event slides */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 0 2rem;
+}
+
+/* Event slide container */
+.event-slide {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  animation: slideShow 20s infinite;
+}
+
+/* Placeholder images */
+.event-slide img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+/* Hover zoom */
+.event-slide:hover img {
+  transform: scale(1.1);
+}
+
+/* Overlay on hover */
+.event-slide .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,164,214,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1.2rem;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.event-slide:hover .overlay {
+  opacity: 1;
+}
+
+/* Slideshow animation */
+@keyframes slideShow {
+  0% {opacity: 1;}
+  20% {opacity: 1;}
+  25% {opacity: 0;}
+  45% {opacity: 1;}
+  50% {opacity: 0;}
+  70% {opacity: 1;}
+  75% {opacity: 0;}
+  100% {opacity: 1;}
+}

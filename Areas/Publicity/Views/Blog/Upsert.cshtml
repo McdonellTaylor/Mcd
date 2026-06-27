@@ -1,0 +1,245 @@
+@model CUTDataScienceClub.Models.Blog
+
+@{
+    ViewData["Title"] = Model?.Id > 0 ? "Edit Blog" : "Create Blog";
+}
+
+<link rel="stylesheet" href="~/css/blogs.css" />
+
+<section class="blog-hero">
+    <div class="hero-inner">
+        <div class="hero-top">
+            <h1>@ViewData["Title"]</h1>
+        </div>
+        <p class="lead">Use the form below to create or edit blog posts. Supported video types: MP4, WebM, MOV, MKV (max 50 MB).</p>
+    </div>
+</section>
+
+<section class="upsert-panel">
+    <div class="blog-item" style="max-width:900px; margin:0 auto;">
+        <div class="blog-body">
+            <form asp-area="Publicity" asp-controller="Blog" asp-action="Upsert" method="post" enctype="multipart/form-data" id="blogForm">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" />
+
+                <div class="form-row">
+                    <label>Upload Image</label>
+                    <input asp-for="ImageUpload" type="file" id="imageUpload" name="ImageUpload" class="form-control" accept="image/*" />
+                    <small class="form-text text-light">Allowed: jpg, jpeg, png, gif. Max 10 MB.</small>
+                    <div id="image-error" class="text-danger" style="margin-top:6px;"></div>
+                    <div id="imagePreview" class="media-preview" style="margin-top:12px;"></div>
+
+                    <label asp-for="Title"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <label asp-for="Slug"></label>
+                    <input asp-for="Slug" class="form-control" />
+                    <span asp-validation-for="Slug" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <label asp-for="Author"></label>
+                    <input asp-for="Author" class="form-control" />
+                    <span asp-validation-for="Author" class="text-danger"></span>
+                </div>
+
+                <div class="form-row two-cols">
+                    <div>
+                        <label asp-for="PublishedDate"></label>
+                        <input asp-for="PublishedDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="PublishedDate" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="IsPublished"></label>
+                        <input asp-for="IsPublished" class="form-check-input" />
+                        <span asp-validation-for="IsPublished" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label asp-for="Excerpt"></label>
+                    <textarea asp-for="Excerpt" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Excerpt" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-row">
+                    <label asp-for="Content"></label>
+                    <!-- Quill editor container -->
+                    <div id="editor" style="height:260px;background:white;border-radius:6px;overflow:auto;"></div>
+                    <!-- Hidden textarea bound to model for server post -->
+                    <textarea asp-for="Content" id="Content" class="form-control text-dark" style="display:none;"></textarea>
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+
+                <div class="form-row two-cols">
+                    <div>
+                        <label asp-for="ImageUrl"></label>
+                        <input asp-for="ImageUrl" class="form-control" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+                    <div>
+                        <label asp-for="Tags"></label>
+                        <input asp-for="Tags" class="form-control" placeholder="comma,separated,tags" />
+                        <span asp-validation-for="Tags" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label>Upload Video</label>
+                    <input asp-for="VideoUpload" type="file" id="videoUpload" name="VideoUpload" class="form-control" accept="video/*" />
+                    <small class="form-text text-light">Allowed: mp4, webm, mov, mkv. Max 50 MB.</small>
+                    <div id="video-error" class="text-danger" style="margin-top:6px;"></div>
+                    <div id="videoPreview" class="media-preview" style="margin-top:12px;"></div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model?.ImageUrl) || !string.IsNullOrEmpty(Model?.VideoUrl))
+                {
+                    <div class="form-row">
+                        <label>Current Media</label>
+                        <div style="display:flex;gap:12px;align-items:center;" id="currentMedia">
+                            @if (!string.IsNullOrEmpty(Model?.VideoUrl))
+                            {
+                                <a href="@Model.VideoUrl" target="_blank" class="btn btn-outline">View Video</a>
+                            }
+                            @if (!string.IsNullOrEmpty(Model?.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" alt="thumb" style="height:80px;border-radius:8px;object-fit:cover;" />
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:12px;">
+                    <a asp-area="Publicity" asp-controller="Blog" asp-action="Index" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+// Initialize Quill editor and populate with model content
+var quill = new Quill('#editor', {
+    theme: 'snow',
+    placeholder: 'Write the blog content here...',
+    modules: { toolbar: [[{ header: [1, 2, false] }], ['bold', 'italic', 'underline'], ['link', 'image', 'video'], [{ list: 'ordered'}, { list: 'bullet' }]] }
+});
+
+// set initial content from server model
+var initialContent = @Html.Raw(Json.Serialize(Model?.Content ?? ""));
+if (initialContent) {
+    quill.root.innerHTML = initialContent;
+}
+
+// handle image & video previews
+var imageInput = document.getElementById('imageUpload');
+var imagePreview = document.getElementById('imagePreview');
+var videoInput = document.getElementById('videoUpload');
+var videoPreview = document.getElementById('videoPreview');
+var currentMedia = document.getElementById('currentMedia');
+var urlObject = null;
+
+function clearImagePreview(){ if (imagePreview) imagePreview.innerHTML = ''; }
+function clearVideoPreview(){ if (videoPreview) videoPreview.innerHTML = ''; }
+
+if (imageInput) {
+    imageInput.addEventListener('change', function(e){
+        clearImagePreview();
+        var f = this.files && this.files[0];
+        if (!f) return;
+        var ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+        var imageExt = ['.jpg', '.jpeg', '.png', '.gif'];
+        if (imageExt.includes(ext)){
+            urlObject = URL.createObjectURL(f);
+            var img = document.createElement('img');
+            img.src = urlObject;
+            img.style.maxHeight = '160px';
+            img.style.borderRadius = '8px';
+            imagePreview.appendChild(img);
+            if (currentMedia) currentMedia.style.opacity = '0.35';
+        } else {
+            imagePreview.innerText = 'Preview not available for this file type.';
+        }
+    });
+}
+
+if (videoInput) {
+    videoInput.addEventListener('change', function(e){
+        clearVideoPreview();
+        var f = this.files && this.files[0];
+        if (!f) return;
+        var ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+        var videoExt = ['.mp4', '.webm', '.mov', '.mkv'];
+        if (videoExt.includes(ext)){
+            urlObject = URL.createObjectURL(f);
+            var vid = document.createElement('video');
+            vid.src = urlObject;
+            vid.controls = true;
+            vid.style.maxHeight = '160px';
+            vid.style.borderRadius = '8px';
+            videoPreview.appendChild(vid);
+            if (currentMedia) currentMedia.style.opacity = '0.35';
+        } else {
+            videoPreview.innerText = 'Preview not available for this file type.';
+        }
+    });
+}
+
+// On form submit, copy Quill content to hidden textarea and run file client validation
+document.getElementById('blogForm').addEventListener('submit', function (e) {
+    // Copy HTML content
+    var contentField = document.getElementById('Content');
+    if (contentField) contentField.value = quill.root.innerHTML;
+
+    // validate image and video file size/type separately
+    var imgInput = document.getElementById('imageUpload');
+    var vidInput = document.getElementById('videoUpload');
+    var imgError = document.getElementById('image-error');
+    var vidError = document.getElementById('video-error');
+    if (imgError) imgError.innerText = '';
+    if (vidError) vidError.innerText = '';
+
+    if (imgInput && imgInput.files && imgInput.files.length > 0) {
+        var f = imgInput.files[0];
+        var allowedImg = ['.jpg', '.jpeg', '.png', '.gif'];
+        var maxImg = 10 * 1024 * 1024; // 10 MB
+        var ext = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+        if (!allowedImg.includes(ext)) {
+            if (imgError) imgError.innerText = 'Unsupported image extension. Allowed: ' + allowedImg.join(', ');
+            e.preventDefault();
+            return false;
+        }
+        if (f.size > maxImg) {
+            if (imgError) imgError.innerText = 'Image too large. Max 10 MB.';
+            e.preventDefault();
+            return false;
+        }
+    }
+
+    if (vidInput && vidInput.files && vidInput.files.length > 0) {
+        var f = vidInput.files[0];
+        var allowedVid = ['.mp4', '.webm', '.mov', '.mkv'];
+        var maxVid = 50 * 1024 * 1024; // 50 MB
+        var extv = f.name.substring(f.name.lastIndexOf('.')).toLowerCase();
+        if (!allowedVid.includes(extv)) {
+            if (vidError) vidError.innerText = 'Unsupported video extension. Allowed: ' + allowedVid.join(', ');
+            e.preventDefault();
+            return false;
+        }
+        if (f.size > maxVid) {
+            if (vidError) vidError.innerText = 'Video too large. Max 50 MB.';
+            e.preventDefault();
+            return false;
+        }
+    }
+    return true;
+});
+</script>

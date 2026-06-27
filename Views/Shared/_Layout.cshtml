@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - CUTDataScienceClub</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/CUTDataScienceClub.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout-custom.css" asp-append-version="true" />
+    <style>
+        /* Small navbar tweaks for a fancier look and logo space */
+        .nav-logo{ height:40px; width:auto; margin-right:12px; }
+        .navbar-custom{ background: linear-gradient(90deg,#071025 0%, #0b1730 100%); }
+        .navbar-custom .nav-link{ color: rgba(255,255,255,0.9); }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link.active{ color: #fff; font-weight:600; }
+        .navbar-custom .dropdown-menu{ background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); }
+        /* ensure dropdown items are readable on dark navbars */
+        .navbar-custom .dropdown-item{
+            color: rgba(255,255,255,0.92);
+        }
+        .navbar-custom .dropdown-item:hover,
+        .navbar-custom .dropdown-item:focus{
+            color: #fff;
+            background: rgba(255,255,255,0.04);
+        }
+        .navbar-custom .dropdown-item.active,
+        .navbar-custom .dropdown-item:active{
+            color:#fff;
+            background: rgba(255,255,255,0.06);
+        }
+        .navbar-brand-text{ font-size:1.05rem; color:#fff; font-weight:700; }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-custom navbar-floating">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/LogoImg/DATA SCIENCE CLUB LOGO.svg" alt="CUT DSC logo" class="nav-logo" onerror="this.style.display='none'" />
+                    <span class="navbar-brand-text">CUT Data Science Club</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    @using CUTDataScienceClub.Constants
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Home" asp-controller="Home" asp-action="Blogs">Blogs</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="contentManagementDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Content
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="contentManagementDropdown">
+                                @* Members/Events/Projects are admin-only *@
+                                @if (User.IsInRole(Roles.Admin.ToString()))
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Member" asp-action="Index">Members</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Event" asp-action="Index">Events</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Admin" asp-controller="Project" asp-action="Index">Projects</a>
+                                    </li>
+                                }
+
+                                @* Blogs can be managed by PublicityManager or Admin *@
+                                @if (User.IsInRole(Roles.PublicityManager.ToString()) || User.IsInRole(Roles.Admin.ToString()))
+                                {
+                                    <li>
+                                        <a class="dropdown-item" asp-area="Publicity" asp-controller="Blog" asp-action="Index">Blogs</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <partial name="_LoginPartial" />
+            </div>
+        </nav>
+    </header>
+    <div class="container content-wrapper">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-light site-footer">
+        <div class="container">
+            &copy; 2025 - CUTDataScienceClub - <a class="text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Toast container -->
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <div id="globalToast" class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+            @if (TempData["ToastMessage"] != null)
+            {
+                var toastType = (TempData["ToastType"] ?? "info").ToString();
+                <div class="toast align-items-center text-bg-@toastType border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            @TempData["ToastMessage"]
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        (function () {
+            try {
+                var toastEl = document.querySelector('#globalToast .toast');
+                if (toastEl) {
+                    var toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+                    toast.show();
+                }
+            } catch (e) {
+                console.warn('Toast init error', e);
+            }
+        })();
+    </script>
+
+    <script>
+        // Choose a random background image from wwwroot/staticimages and set CSS variable --bg-image
+        (function () {
+            try {
+                var images = [
+                    '/staticimages/IMG-20251028-WA0110.jpg',
+                    '/staticimages/IMG-20251028-WA0114.jpg',
+                    '/staticimages/IMG-20251028-WA0115.jpg',
+                    '/staticimages/IMG-20251028-WA0118.jpg',
+                    '/staticimages/IMG-20251028-WA0119.jpg'
+                ];
+                var idx = Math.floor(Math.random() * images.length);
+                var url = "url('" + images[idx] + "')";
+                document.documentElement.style.setProperty('--bg-image', url);
+            } catch (e) {
+                console.warn('Background init error', e);
+            }
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+@model IEnumerable<CUTDataScienceClub.Models.Blog>
+
+@{
+    ViewData["Title"] = "Blog";
+}
+
+<link rel="stylesheet" href="~/css/blogs.css" />
+
+<section class="blog-hero">
+    <div class="hero-inner">
+        <div class="hero-top">
+            <h1>Latest from CUT Data Science Club</h1>
+            <a asp-area="Publicity" asp-controller="Blog" asp-action="Upsert" class="btn btn-primary create-btn">+ Create Blog</a>
+        </div>
+        <p class="lead">News, tutorials, event recaps and project highlights — curated by the community.</p>
+    </div>
+</section>
+
+<section class="blog-grid">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var b in Model)
+        {
+            <article class="blog-item">
+                <div class="media-wrap">
+                    @if (!string.IsNullOrEmpty(b.VideoUrl))
+                    {
+                        <div class="video-thumb" data-video-url="@b.VideoUrl">
+                            <div class="play-overlay">▶</div>
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(b.ImageUrl))
+                    {
+                        <div class="image-thumb" style="background-image:url('@b.ImageUrl')"></div>
+                    }
+                    else
+                    {
+                        <div class="image-thumb placeholder"></div>
+                    }
+                </div>
+
+                <div class="blog-body">
+                    <h2 class="blog-title">@b.Title</h2>
+                    <div class="meta">
+                        <span class="author">@b.Author</span>
+                        <span class="dot">•</span>
+                        <span class="date">@b.PublishedDate?.ToString("MMM d, yyyy")</span>
+                    </div>
+
+                    <p class="excerpt">@b.Excerpt</p>
+
+                    @if (!string.IsNullOrEmpty(b.Tags))
+                    {
+                        <div class="tags">
+                            @foreach (var t in (b.Tags ?? string.Empty).Split(',', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                <span class="tag">@t.Trim()</span>
+                            }
+                        </div>
+                    }
+
+                    <div class="actions">
+                        <a asp-area="Publicity" asp-controller="Blog" asp-action="Details" asp-route-id="@b.Id" class="btn btn-primary">Read</a>
+                        <a asp-area="Publicity" asp-controller="Blog" asp-action="Upsert" asp-route-id="@b.Id" class="btn btn-outline">Edit</a>
+
+                        <form asp-area="Publicity" asp-controller="Blog" asp-action="DeleteConfirmed" method="post" class="delete-form" onsubmit="return confirm('Delete this blog post?');">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@b.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        }
+    }
+    else
+    {
+        <div class="no-blogs">No blog posts found.</div>
+    }
+</section>
+
+<script>
+// simple click-to-play overlay that opens video in new tab or lightbox - keep minimal
+document.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && !el.classList.contains('video-thumb')) el = el.parentElement;
+    if (el && el.dataset && el.dataset.videoUrl) {
+        var url = el.dataset.videoUrl;
+        // open in new tab - lighter weight than adding a full modal
+        window.open(url, '_blank');
+    }
+});
+</script>
